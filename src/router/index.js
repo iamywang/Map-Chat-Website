@@ -78,19 +78,25 @@ export const constantRouterMap = [
       {
         path: 'func1',
         name: 'gpsManage',
-        component: () => import('@/views/UserList/index'),
-        meta: { title: '位置管理', icon: 'manage' }
+        component: () => import('@/views/Map/index'),
+        meta: { title: '地图', icon: 'table' }
       },
       {
         path: 'func2',
+        name: 'gpsManage',
+        component: () => import('@/views/GPSList/index'),
+        meta: { title: '位置管理', icon: 'manage' }
+      },
+      {
+        path: 'func3',
         name: 'history',
         component: () => import('@/views/UserList/index'),
         meta: { title: '历史轨迹', icon: 'table' }
       },
       {
-        path: 'func3',
+        path: 'func4',
         name: 'addLocation',
-        component: () => import('@/views/UserList/index'),
+        component: () => import('@/views/Map/index'),
         meta: { title: '添加位置', icon: 'news' }
       }
     ]
