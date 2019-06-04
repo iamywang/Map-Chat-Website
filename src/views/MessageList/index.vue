@@ -25,6 +25,7 @@
       <el-table-column align="center" sortable label="ID2" prop="id2"/>
       <el-table-column align="center" label="用户2昵称" prop="nick2"/>
       <el-table-column align="center" label="时间" prop="time"/>
+      <el-table-column align="center" label="是否已读" prop="read"/>
       <el-table-column align="center" label="消息内容" prop="msg"/>
       <el-table-column align="center" label="选项">
         <template slot-scope="scope">

@@ -28,13 +28,14 @@
 
 <script>
 import AMap from 'AMap'
-// import AMapUI from 'AMapUI'
 import axios from 'axios'
 import qs from 'qs'
 
 export default {
   data() {
     return {
+      list: [],
+      listLoading: true,
       id: '1',
       time: '',
       location: ''
@@ -56,8 +57,33 @@ export default {
     })
     map.addControl(new AMap.Scale({ visible: true }))
     map.add(traffic)
+    // this.fetchData(map)
   },
   methods: {
+    fetchData(map) {
+      this.listLoading = true
+      var that = this
+      axios.get('/server/getLocations/', {
+        params: {
+          key: 'all'
+        }
+      }).then(function(res) {
+        that.list = res.data
+        that.listLoading = false
+        // for (var item in that.list) {
+        //   var lat = item.location.split(',')[0]
+        //   var lng = item.location.split(',')[1]
+        //   that.addMarkerLoc(map, lat, lng)
+        // }
+      })
+    },
+    addMarkerLoc(nmap, lat, lng) {
+      var marker = new AMap.Marker({
+        map: nmap,
+        position: [lng, lat]
+      })
+      nmap.addMarker(marker)
+    },
     formatNumber(n) {
       n = n.toString()
       return n[1] ? n : '0' + n
@@ -77,6 +103,7 @@ export default {
       var that = this
       axios.post('/server/addLocation/', qs.stringify({
         id: that.id,
+        road: 0,
         time: that.time,
         location: that.location
       })).then(function(res) {

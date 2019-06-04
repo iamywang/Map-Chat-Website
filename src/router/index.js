@@ -90,14 +90,8 @@ export const constantRouterMap = [
       {
         path: 'func3',
         name: 'history',
-        component: () => import('@/views/UserList/index'),
+        component: () => import('@/views/GPSHistory/index'),
         meta: { title: '历史轨迹', icon: 'table' }
-      },
-      {
-        path: 'func4',
-        name: 'addLocation',
-        component: () => import('@/views/Map/index'),
-        meta: { title: '添加位置', icon: 'news' }
       }
     ]
   },

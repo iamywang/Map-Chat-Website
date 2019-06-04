@@ -23,6 +23,7 @@
       <el-table-column align="center" sortable label="ID" prop="id"/>
       <el-table-column align="center" sortable label="时间" prop="time"/>
       <el-table-column align="center" label="位置" prop="location"/>
+      <el-table-column align="center" label="路径标识" prop="road"/>
       <el-table-column align="center" label="选项">
         <template slot-scope="scope">
           <el-button-group>
@@ -78,7 +79,7 @@ export default {
       })
     },
     addLocation() {
-      this.$router.push({ path: '/gps/func4' })
+      this.$router.push({ path: '/gps/func1' })
     },
     edit(res) {
       this.dialogFormVisible = true
@@ -88,6 +89,7 @@ export default {
     },
     del(res) {
       this.id = res.id
+      this.time = res.time
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -104,6 +106,7 @@ export default {
       var that = this
       axios.post('/server/updateLocation/', qs.stringify({
         id: that.id,
+        road: 0,
         time: that.time,
         location: that.location
       })).then(function(res) {
