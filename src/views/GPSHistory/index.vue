@@ -1,16 +1,30 @@
 <template>
   <div>
-    <el-card shadow="hover" style="text-align: center; margin: 8px; font-weight: bold">地图</el-card>
-    <el-col :span="1" style="margin: 8px">
-      <el-tag style="width: 100%; text-align: center">id</el-tag>
+    <el-card shadow="hover" style="text-align: center; margin: 8px; font-weight: bold">历史轨迹</el-card>
+    <el-col :span="17">
+      <div id="container" style="height:550px"/>
     </el-col>
-    <el-col :span="4" style="margin: 8px">
-      <el-input v-model="id" placeholder="请输入id" size="small"/>
+    <el-col :span="7">
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        stripe
+        border
+        fit
+        highlight-current-row
+        style="margin-left: 1%; margin-right: 1%">
+        <el-table-column align="center" sortable label="ID" prop="id"/>
+        <el-table-column align="center" label="路径标识" prop="road"/>
+        <el-table-column align="center" label="选项">
+          <template slot-scope="scope">
+            <el-button-group>
+              <el-button type="primary" size="mini" icon="el-icon-search" @click="searchGPS(scope.row)"/>
+            </el-button-group>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-col>
-    <el-col :span="2" style="margin: 8px">
-      <el-button size="small" @click="searchGPS">查询</el-button>
-    </el-col>
-    <div id="container" style="margin-left: 2%; width:96%; height:520px"/>
   </div>
 </template>
 
@@ -23,25 +37,49 @@ import qs from 'qs'
 export default {
   data() {
     return {
+      list: [],
+      listLoading: true,
       id: '1',
-      time: '',
-      location: '',
       map: ''
     }
   },
   mounted() {
+    var that = this
+    this.fetchData()
     this.map = new AMap.Map('container', {
       resizeEnable: true,
       zoom: 11
+    })
+    AMap.plugin('AMap.Geolocation', function() {
+      var geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 1000,
+        buttonPosition: 'RB',
+        buttonOffset: new AMap.Pixel(10, 20),
+        zoomToAccuracy: false
+      })
+      that.map.addControl(geolocation)
     })
     var traffic = new AMap.TileLayer.Traffic({
       'autoRefresh': true,
       'interval': 1
     })
     this.map.addControl(new AMap.Scale({ visible: true }))
+    this.map.addControl(new AMap.ToolBar({ visible: true }))
+    this.map.addControl(new AMap.OverView({ visible: true }))
     this.map.add(traffic)
   },
   methods: {
+    fetchData(map) {
+      this.listLoading = true
+      var that = this
+      axios.post('/server/getHistoryRoadList/', qs.stringify({
+        id: that.id
+      })).then(function(res) {
+        that.list = res.data
+        that.listLoading = false
+      })
+    },
     formatNumber(n) {
       n = n.toString()
       return n[1] ? n : '0' + n
@@ -62,34 +100,56 @@ export default {
         path: list,
         borderWeight: 2,
         lineJoin: 'round',
-        lineCap: 'round'
+        lineCap: 'round',
+        isOutline: true,
+        outlineColor: '#ffffff',
+        strokeColor: '#0080ff',
+        showDir: true
       })
       this.map.add(polyline)
+      var startIcon = new AMap.Icon({
+        size: new AMap.Size(25, 34),
+        image: '//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png',
+        imageSize: new AMap.Size(135, 40),
+        imageOffset: new AMap.Pixel(-9, -3)
+      })
+      var startMarker = new AMap.Marker({
+        position: list[0],
+        icon: startIcon,
+        offset: new AMap.Pixel(-13, -30)
+      })
+      this.map.add(startMarker)
+      var endIcon = new AMap.Icon({
+        size: new AMap.Size(25, 34),
+        image: '//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png',
+        imageSize: new AMap.Size(135, 40),
+        imageOffset: new AMap.Pixel(-95, -3)
+      })
+      var endMarker = new AMap.Marker({
+        position: list[list.length - 1],
+        icon: endIcon,
+        offset: new AMap.Pixel(-13, -30)
+      })
+      this.map.add(endMarker)
     },
-    searchGPS() {
+    searchGPS(res) {
       var that = this
-      axios.post('/server/getHistoryRoadList/', qs.stringify({
-        id: that.id
+      axios.post('/server/getHistoryRoad/', qs.stringify({
+        id: res.id,
+        road: res.road
       })).then(function(res) {
-        for (var item in res.data) {
-          axios.post('/server/getHistoryRoad/', qs.stringify({
-            id: that.id,
-            road: res.data[item].road
-          })).then(function(res) {
-            var LatlngList = []
-            for (var loc in res.data) {
-              var lat = res.data[loc].location.split(',')[0]
-              var lng = res.data[loc].location.split(',')[1]
-              var l = new AMap.LngLat(lng, lat)
-              LatlngList.push(l)
-            }
-            that.addRoad(LatlngList)
-            that.$notify({
-              type: 'success',
-              message: '查询成功!'
-            })
-          })
+        var LatlngList = []
+        for (var loc in res.data) {
+          var lat = res.data[loc].location.split(',')[0]
+          var lng = res.data[loc].location.split(',')[1]
+          var l = new AMap.LngLat(lng, lat)
+          LatlngList.push(l)
         }
+        that.addRoad(LatlngList)
+        that.$notify({
+          type: 'success',
+          message: '查询成功!'
+        })
       })
     }
   }

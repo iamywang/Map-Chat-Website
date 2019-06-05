@@ -22,7 +22,7 @@
     <el-col :span="2" style="margin: 8px">
       <el-button size="small" @click="addLocation">添加</el-button>
     </el-col>
-    <div id="container" style="margin-left: 2%; width:96%; height:520px"/>
+    <div id="container" style="margin-left: 2%; width:96%; height:510px"/>
   </div>
 </template>
 
@@ -55,9 +55,20 @@ export default {
       'autoRefresh': true,
       'interval': 1
     })
+    AMap.plugin('AMap.Geolocation', function() {
+      var geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true,
+        timeout: 1000,
+        buttonPosition: 'RB',
+        buttonOffset: new AMap.Pixel(10, 20),
+        zoomToAccuracy: false
+      })
+      map.addControl(geolocation)
+    })
     map.addControl(new AMap.Scale({ visible: true }))
+    map.addControl(new AMap.ToolBar({ visible: true }))
+    map.addControl(new AMap.OverView({ visible: true }))
     map.add(traffic)
-    // this.fetchData(map)
   },
   methods: {
     fetchData(map) {
