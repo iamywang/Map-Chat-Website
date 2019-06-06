@@ -34,6 +34,7 @@ import qs from 'qs'
 export default {
   data() {
     return {
+      map: '',
       list: [],
       listLoading: true,
       id: '1',
@@ -43,11 +44,11 @@ export default {
   },
   mounted() {
     var that = this
-    var map = new AMap.Map('container', {
+    this.map = new AMap.Map('container', {
       resizeEnable: true,
       zoom: 11
     })
-    map.on('click', function(e) {
+    this.map.on('click', function(e) {
       that.location = e.lnglat.getLat() + ',' + e.lnglat.getLng()
       that.time = that.formatTime(new Date())
     })
@@ -63,37 +64,34 @@ export default {
         buttonOffset: new AMap.Pixel(10, 20),
         zoomToAccuracy: false
       })
-      map.addControl(geolocation)
+      this.map.addControl(geolocation)
     })
-    map.addControl(new AMap.Scale({ visible: true }))
-    map.addControl(new AMap.ToolBar({ visible: true }))
-    map.addControl(new AMap.OverView({ visible: true }))
-    map.add(traffic)
+    this.map.addControl(new AMap.Scale({ visible: true }))
+    this.map.addControl(new AMap.ToolBar({ visible: true }))
+    this.map.addControl(new AMap.OverView({ visible: true }))
+    this.map.add(traffic)
+    this.fetchData()
   },
   methods: {
-    fetchData(map) {
+    fetchData() {
       this.listLoading = true
       var that = this
       axios.get('/server/getLocations/', {
         params: {
-          key: 'all'
+          key: 'web'
         }
       }).then(function(res) {
         that.list = res.data
         that.listLoading = false
-        // for (var item in that.list) {
-        //   var lat = item.location.split(',')[0]
-        //   var lng = item.location.split(',')[1]
-        //   that.addMarkerLoc(map, lat, lng)
-        // }
+        for (var item in res.data) {
+          var lat = res.data[item].location.split(',')[0]
+          var lng = res.data[item].location.split(',')[1]
+          var marker = new AMap.Marker({
+            position: [lng, lat]
+          })
+          that.map.add(marker)
+        }
       })
-    },
-    addMarkerLoc(nmap, lat, lng) {
-      var marker = new AMap.Marker({
-        map: nmap,
-        position: [lng, lat]
-      })
-      nmap.addMarker(marker)
     },
     formatNumber(n) {
       n = n.toString()
