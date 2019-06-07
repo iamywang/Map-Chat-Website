@@ -87,7 +87,8 @@ export default {
           var lat = res.data[item].location.split(',')[0]
           var lng = res.data[item].location.split(',')[1]
           var marker = new AMap.Marker({
-            position: [lng, lat]
+            position: [lng, lat],
+            title: 'ID：' + res.data[item].id + '  时间：' + res.data[item].time
           })
           that.map.add(marker)
         }

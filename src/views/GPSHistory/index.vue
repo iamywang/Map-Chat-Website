@@ -74,7 +74,7 @@ export default {
       this.listLoading = true
       var that = this
       axios.post('/server/getHistoryRoadList/', qs.stringify({
-        id: that.id
+        id: 100000
       })).then(function(res) {
         that.list = res.data
         that.listLoading = false
@@ -107,6 +107,7 @@ export default {
         showDir: true
       })
       this.map.add(polyline)
+      this.map.setFitView([polyline])
       var startIcon = new AMap.Icon({
         size: new AMap.Size(25, 34),
         image: '//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png',

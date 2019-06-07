@@ -45,7 +45,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/user/func1',
     name: 'userManagement',
-    meta: { title: '用户管理', icon: 'peoples' },
+    meta: { title: '用户管理', icon: 'users' },
     children: [
       {
         path: 'func1',
@@ -64,6 +64,12 @@ export const constantRouterMap = [
         name: 'friendsManagement',
         component: () => import('@/views/FriendList/index'),
         meta: { title: '好友管理', icon: 'manage' }
+      },
+      {
+        path: 'func4',
+        name: 'feedManagement',
+        component: () => import('@/views/FeedBackList/index'),
+        meta: { title: '反馈管理', icon: 'feedback' }
       }
     ]
   },
@@ -73,25 +79,25 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/gps/func1',
     name: 'gpsManagement',
-    meta: { title: '位置管理', icon: 'peoples' },
+    meta: { title: '位置管理', icon: 'locationm' },
     children: [
       {
         path: 'func1',
         name: 'gpsManage',
         component: () => import('@/views/Map/index'),
-        meta: { title: '地图', icon: 'table' }
+        meta: { title: '地图', icon: 'map' }
       },
       {
         path: 'func2',
-        name: 'gpsManage',
-        component: () => import('@/views/GPSList/index'),
-        meta: { title: '位置管理', icon: 'manage' }
+        name: 'history',
+        component: () => import('@/views/GPSHistory/index'),
+        meta: { title: '历史轨迹', icon: 'path' }
       },
       {
         path: 'func3',
-        name: 'history',
-        component: () => import('@/views/GPSHistory/index'),
-        meta: { title: '历史轨迹', icon: 'table' }
+        name: 'gpsManage',
+        component: () => import('@/views/GPSList/index'),
+        meta: { title: '位置管理', icon: 'location' }
       }
     ]
   },
@@ -101,7 +107,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/msg/func1',
     name: 'msgManagement',
-    meta: { title: '消息管理', icon: 'comment' },
+    meta: { title: '消息管理', icon: 'message' },
     children: [
       {
         path: 'func1',
@@ -113,13 +119,13 @@ export const constantRouterMap = [
         path: 'func2',
         name: 'msgTotal',
         component: () => import('@/views/MessageData/index'),
-        meta: { title: '消息统计', icon: 'list' }
+        meta: { title: '消息统计', icon: 'statistics' }
       },
       {
         path: 'func3',
         name: 'addMessage',
         component: () => import('@/views/AddMessage/index'),
-        meta: { title: '添加消息', icon: 'addcomment' }
+        meta: { title: '添加消息', icon: 'addm' }
       }
     ]
   },

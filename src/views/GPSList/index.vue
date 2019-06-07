@@ -23,7 +23,13 @@
       <el-table-column align="center" sortable label="ID" prop="id"/>
       <el-table-column align="center" sortable label="时间" prop="time"/>
       <el-table-column align="center" label="位置" prop="location"/>
-      <el-table-column align="center" label="路径标识" prop="road"/>
+      <el-table-column align="center" label="路径标识">
+        <template slot-scope="scope">
+          <div v-if="scope.row.road === 0">历史位置</div>
+          <div v-else-if="scope.row.road === 9999">实时位置</div>
+          <div v-else>{{ scope.row.road }}</div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="选项">
         <template slot-scope="scope">
           <el-button-group>
