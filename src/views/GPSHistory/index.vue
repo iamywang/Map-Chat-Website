@@ -149,7 +149,7 @@ export default {
         that.addRoad(LatlngList)
         that.$notify({
           type: 'success',
-          message: '查询成功!'
+          message: '查询成功! 路径长度：' + AMap.GeometryUtil.distanceOfLine(LatlngList).toFixed(2) + '米'
         })
       })
     }
