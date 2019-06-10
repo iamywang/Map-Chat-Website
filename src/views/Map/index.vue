@@ -34,12 +34,12 @@ import qs from 'qs'
 export default {
   data() {
     return {
-      map: '',
       list: [],
       listLoading: true,
       id: '1',
       time: '',
-      location: ''
+      location: '',
+      map: ''
     }
   },
   mounted() {
@@ -48,14 +48,7 @@ export default {
       resizeEnable: true,
       zoom: 11
     })
-    this.map.on('click', function(e) {
-      that.location = e.lnglat.getLat() + ',' + e.lnglat.getLng()
-      that.time = that.formatTime(new Date())
-    })
-    var traffic = new AMap.TileLayer.Traffic({
-      'autoRefresh': true,
-      'interval': 1
-    })
+    this.fetchData()
     AMap.plugin('AMap.Geolocation', function() {
       var geolocation = new AMap.Geolocation({
         enableHighAccuracy: true,
@@ -64,13 +57,20 @@ export default {
         buttonOffset: new AMap.Pixel(10, 20),
         zoomToAccuracy: false
       })
-      this.map.addControl(geolocation)
+      that.map.addControl(geolocation)
+    })
+    var traffic = new AMap.TileLayer.Traffic({
+      'autoRefresh': true,
+      'interval': 1
     })
     this.map.addControl(new AMap.Scale({ visible: true }))
     this.map.addControl(new AMap.ToolBar({ visible: true }))
     this.map.addControl(new AMap.OverView({ visible: true }))
     this.map.add(traffic)
-    this.fetchData()
+    this.map.on('click', function(e) {
+      that.location = e.lnglat.getLat() + ',' + e.lnglat.getLng()
+      that.time = that.formatTime(new Date())
+    })
   },
   methods: {
     fetchData() {

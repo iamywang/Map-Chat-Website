@@ -49,7 +49,7 @@ export default {
         name: that.nick,
         sex: that.sex,
         birth: that.birth,
-        height: that.birth,
+        height: that.height,
         weight: that.weight,
         reg: that.regdate,
         login: that.logindate
